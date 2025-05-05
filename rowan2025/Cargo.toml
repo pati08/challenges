@@ -1,0 +1,8 @@
+[package]
+name = "rowan2025"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+challenges-input.workspace = true
+clap.workspace = true
