@@ -1,10 +1,15 @@
-use std::io::BufRead;
+use std::io::Read;
 use std::path::PathBuf;
 
 #[derive(clap::Parser)]
 pub struct DefaultArgs {
     #[arg(short, long, value_name = "PATH")]
-    input_file: String,
+    #[cfg(test)]
+    pub input_file: String,
+
+    #[arg(short, long, value_name = "PATH")]
+    #[cfg(not(test))]
+    pub input_file: String,
 }
 impl DefaultArgs {
     pub fn get_input(&self, trim: bool) -> Input {
@@ -27,34 +32,66 @@ pub trait ProblemDesc {
 }
 
 /// Datastructure to egonomically read input from stdin or a file.
+#[derive(Clone)]
 pub struct Input {
+    original: String,
     ptr: usize,
     lines: Vec<String>,
 }
 impl Input {
     /// Construct from a list of strings
-    pub fn new(lines: Vec<String>) -> Self {
-        Self { ptr: 0, lines }
+    pub fn new(text: String, trim: bool) -> Self {
+        let lines = text
+            .lines()
+            .map(|line| {
+                if trim {
+                    line.trim().to_string()
+                } else {
+                    line.to_string()
+                }
+            })
+            .collect();
+        Self {
+            ptr: 0,
+            lines,
+            original: text,
+        }
+    }
+    /// Get the original text
+    pub fn get_original(&self) -> &str {
+        &self.original
     }
     /// Get the next line as a string
     ///
     /// # Panics
     /// Panics if the next line is out of bounds
-    pub fn next_line(&mut self) -> String {
+    pub fn next_line(&mut self) -> Option<String> {
+        let res = self.lines.get(self.ptr).cloned();
         self.ptr += 1;
-        self.lines[self.ptr - 1].clone()
+        res
     }
     #[allow(clippy::should_implement_trait)]
     /// Get the next line parsed with `FromStr` as type `T`
     ///
     /// # Panics
     /// Panics if the next line is out of bounds or `FromStr::parse` fails
-    pub fn next<T>(&mut self) -> T
+    pub fn next<T>(&mut self) -> Option<T>
     where
         T: std::str::FromStr,
         T::Err: std::fmt::Debug,
     {
-        self.next_line().parse().unwrap()
+        if self.ptr >= self.lines.len() {
+            return None;
+        }
+        let res = self.next_line()?.parse();
+        if res.is_err() {
+            self.ptr -= 1;
+        }
+        res.ok()
+    }
+    /// Skip `n` lines
+    pub fn skip(&mut self, n: usize) {
+        self.ptr += n;
     }
     /// Skips the next `n` lines and returns an iterator over the skipped lines
     ///
@@ -66,14 +103,46 @@ impl Input {
     }
     /// Construct from a reader
     pub fn from_reader<R: std::io::Read>(reader: R, trim: bool) -> Self {
-        let reader = std::io::BufReader::new(reader);
-        let lines = reader.lines().map_while(Result::ok);
-        let lines = if trim {
-            lines.map(|v| v.trim().to_string()).collect()
-        } else {
-            lines.collect()
-        };
-        Self { ptr: 0, lines }
+        let mut reader = std::io::BufReader::new(reader);
+        let mut text = String::new();
+        reader.read_to_string(&mut text).unwrap();
+        Self::new(text, trim)
+    }
+    pub fn lines(&self) -> InputLines {
+        InputLines {
+            ptr: self.ptr,
+            lines: self.lines.clone(),
+        }
+    }
+    pub fn lines_consuming<'a>(&'a mut self) -> InputLinesConsuming<'a> {
+        InputLinesConsuming { input: self }
+    }
+}
+
+pub struct InputLinesConsuming<'a> {
+    input: &'a mut Input,
+}
+impl Iterator for InputLinesConsuming<'_> {
+    type Item = String;
+    fn next(&mut self) -> Option<Self::Item> {
+        self.input.next_line()
+    }
+}
+
+pub struct InputLines {
+    ptr: usize,
+    lines: Vec<String>,
+}
+
+impl Iterator for InputLines {
+    type Item = String;
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.ptr >= self.lines.len() {
+            return None;
+        }
+        let line = self.lines[self.ptr].clone();
+        self.ptr += 1;
+        Some(line)
     }
 }
 
@@ -82,17 +151,7 @@ fn get_file_input(filepath: PathBuf, trim: bool) -> Input {
         panic!("Input file does not exist.");
     }
     let raw_input = std::fs::read_to_string(filepath).expect("Failed to read input file.");
-    let input = raw_input
-        .lines()
-        .map(|line| {
-            if trim {
-                line.trim().to_string()
-            } else {
-                line.to_string()
-            }
-        })
-        .collect::<Vec<_>>();
-    Input::new(input)
+    Input::new(raw_input, trim)
 }
 
 fn get_stdin_input(trim: bool) -> Input {
@@ -107,12 +166,7 @@ mod tests {
 
     #[test]
     fn input_take() {
-        let mut input = Input::new(vec![
-            "1".to_string(),
-            "hello".to_string(),
-            "world".to_string(),
-            "rust".to_string(),
-        ]);
+        let mut input = Input::new("1\nhello\nworld\nrust".to_string(), false);
         let _ = input.next::<String>();
         let _ = input.take(2);
         assert_eq!(input.ptr, 3);
@@ -120,28 +174,19 @@ mod tests {
 
     #[test]
     fn input_next() {
-        let mut input = Input::new(vec![
-            "1".to_string(),
-            "hello".to_string(),
-            "world".to_string(),
-            "rust".to_string(),
-        ]);
-        let num: i32 = input.next();
+        let mut input = Input::new("1\nhello\nworld\nrust".to_string(), false);
+        let num: i32 = input.next().unwrap();
         assert_eq!(num, 1);
         assert_eq!(input.ptr, 1);
-        let mystr: String = input.next();
+        let mystr: String = input.next().unwrap();
         assert_eq!(mystr, "hello");
         assert_eq!(input.ptr, 2);
     }
 
     #[test]
     fn input_next_line() {
-        let mut input = Input::new(vec![
-            "hello".to_string(),
-            "world".to_string(),
-            "rust".to_string(),
-        ]);
-        let line = input.next_line();
+        let mut input = Input::new("hello\nworld\nrust".to_string(), false);
+        let line = input.next_line().unwrap();
         assert_eq!(line, "hello");
         assert_eq!(input.ptr, 1);
     }

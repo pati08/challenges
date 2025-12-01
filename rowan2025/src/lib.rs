@@ -57,7 +57,7 @@ pub fn run(args: &DefaultArgs) -> String {
     let mut input = args.get_input(true);
     let mut output = String::new();
 
-    let num_cases: usize = input.next();
+    let num_cases: usize = input.next().unwrap();
 
     macro_rules! puts {
         ($($arg:tt)*) => {
@@ -70,18 +70,18 @@ pub fn run(args: &DefaultArgs) -> String {
 
     for i in 0..num_cases {
         puts!("Data Set {}", i + 1);
-        let answer = input.next_line();
+        let answer = input.next_line().unwrap();
         puts!("Puzzle answer: {answer}");
 
-        let word_bank_size: usize = input.next();
+        let word_bank_size: usize = input.next().unwrap();
         puts!("Words in word bank: {word_bank_size}");
         let word_bank: Vec<String> = (0..word_bank_size)
-            .map(|_| input.next_line().to_string())
+            .map(|_| input.next_line().unwrap().to_string())
             .collect();
 
         let mut remaining_words = word_bank.clone();
 
-        let guess_num: usize = input.next();
+        let guess_num: usize = input.next().unwrap();
         puts!("Guesses: {guess_num}");
 
         let mut solved = false;
@@ -127,8 +127,38 @@ pub fn run(args: &DefaultArgs) -> String {
     output
 }
 
-// #[cfg(test)]
-// mod tests {
-//     #[test]
-//     fn
-// }
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn rowan_2025() {
+        let input = DefaultArgs {
+            input_file: String::from(
+                "1
+paste
+5
+alpha
+paste
+astro
+snort
+blast
+4
+blast
+snort
+alpha
+paste",
+            ),
+        };
+        let correct_output = "Analyzing 1 data set(s)
+Data Set 1
+Puzzle answer: paste
+Words in word bank: 5
+Guesses: 4
+ blast: 00111  words left: 2  astro paste
+ snort: 10001  words left: 1  paste
+ alpha: 10100  words left: 1  paste
+ paste: 22222
+The Puzzle Is Solved!";
+    }
+}

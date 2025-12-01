@@ -33,7 +33,7 @@ struct Args {
     copy: bool,
 }
 
-subcommands!(Rowan2025: rowan2025, Aoc2024: aoc2024);
+subcommands!(Rowan2025: rowan2025, Aoc: aoc);
 
 fn main() {
     let args = Args::parse();

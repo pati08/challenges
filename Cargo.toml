@@ -1,12 +1,14 @@
 [workspace]
 resolver = "2"
-members = [ "aoc-helpers", "aoc2024", "challenges-input",
+members = [ "aoc-helpers", "aoc", "challenges-input", "proc-macros",
     "rowan2025",
 ]
 
 [workspace.dependencies]
 clap = { version = "4.5", features = ["derive"] }
-challenges-input = { path = "./challenges-input" }
+challenges-input.path = "./challenges-input"
+proc-macros.path = "./proc-macros"
+itertools = "0.14.0"
 
 [package]
 name = "challenges"
@@ -15,7 +17,7 @@ edition = "2021"
 
 [dependencies]
 rowan2025 = { path = "rowan2025" }
-aoc2024 = { path = "aoc2024" }
+aoc = { path = "aoc" }
 clap.workspace = true
 challenges-input.workspace = true
 arboard = "3.5.0"

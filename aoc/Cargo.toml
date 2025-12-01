@@ -1,0 +1,11 @@
+[package]
+name = "aoc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap.workspace = true
+aoc-helpers = { version = "0.1", path = "../aoc-helpers" }
+challenges-input.workspace = true
+proc-macros.workspace = true
+itertools.workspace = true
