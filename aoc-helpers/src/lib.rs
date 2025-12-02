@@ -6,6 +6,27 @@ use std::{
 use challenges_input::Input;
 
 #[macro_export]
+macro_rules! mk_aoc_test {
+    ($input:expr, $ans_a:expr, $ans_b:expr) => {
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+            use $crate::mk_test_input;
+
+            fn part_a_works() {
+                let input = mk_test_input!($input);
+                assert_eq!(part_a(input), $ans_a);
+            }
+
+            fn part_b_works() {
+                let input = mk_test_input!($input);
+                assert_eq!(part_b(input), $ans_b);
+            }
+        }
+    };
+}
+
+#[macro_export]
 macro_rules! days {
     ( $( $num:expr => $module:ident ),* ) => {
         $(
