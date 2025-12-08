@@ -17,12 +17,11 @@ fn to_code(s: &str) -> u8 {
 }
 
 fn bonus(a: u8, b: u8) -> u8 {
-    let res = match (a, b) {
+    match (a, b) {
         (a, b) if a == b => 3,
         (1, 3) | (2, 1) | (3, 2) => 0,
         _ => 6,
-    };
-    res
+    }
 }
 
 fn part_a(input: Input) -> u64 {

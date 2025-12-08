@@ -1,5 +1,4 @@
 #![feature(array_windows)]
-#![feature(let_chains)]
 #![feature(iter_map_windows)]
 
 pub use aoc_helpers::{days, years, Args, ProblemDesc};

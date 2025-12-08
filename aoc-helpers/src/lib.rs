@@ -13,11 +13,13 @@ macro_rules! mk_aoc_test {
             use super::*;
             use $crate::mk_test_input;
 
+            #[test]
             fn part_a_works() {
                 let input = mk_test_input!($input);
                 assert_eq!(part_a(input), $ans_a);
             }
 
+            #[test]
             fn part_b_works() {
                 let input = mk_test_input!($input);
                 assert_eq!(part_b(input), $ans_b);
@@ -81,7 +83,7 @@ pub fn run<A: Display + Send + 'static, B: Display + Send + 'static>(
     let h2 = std::thread::spawn(|| part_b(input));
     let a_res = h1.join().unwrap();
     let b_res = h2.join().unwrap();
-    format!("Part A: {}\nPart B: {}", a_res, b_res,)
+    format!("Part A: {a_res}\nPart B: {b_res}")
 }
 
 #[derive(clap::Parser)]
@@ -104,12 +106,12 @@ impl Args {
 }
 
 pub fn get_input(problems_dir: &Path, day: u8, trim: bool) -> Input {
-    let problem_path = problems_dir.join(format!("day{:02}.txt", day));
+    let problem_path = problems_dir.join(format!("day{day:02}.txt"));
     if !problem_path.is_file() {
-        panic!("Input file not found: {:?}", problem_path);
+        panic!("Input file not found: {problem_path:?}");
     }
     let raw = std::fs::read_to_string(&problem_path)
-        .unwrap_or_else(|_| panic!("Failed to read input file: {:?}", problem_path));
+        .unwrap_or_else(|_| panic!("Failed to read input file: {problem_path:?}"));
     Input::new(raw, trim)
 }
 
