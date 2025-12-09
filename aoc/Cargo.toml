@@ -9,3 +9,5 @@ aoc-helpers = { version = "0.1", path = "../aoc-helpers" }
 challenges-input.workspace = true
 proc-macros.workspace = true
 itertools.workspace = true
+float-ord = "0.3.2"
+rayon = "1.11.0"
