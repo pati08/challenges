@@ -22,3 +22,4 @@ clap.workspace = true
 challenges-input.workspace = true
 arboard = "3.5.0"
 float-ord = "0.3.2"
+lru = "0.16.2"

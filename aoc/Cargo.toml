@@ -11,3 +11,4 @@ proc-macros.workspace = true
 itertools.workspace = true
 float-ord = "0.3.2"
 rayon = "1.11.0"
+lru = "0.16.2"

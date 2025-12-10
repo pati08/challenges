@@ -31,6 +31,7 @@
         buildInputs = with pkgs; [
           rustPlatform
           bacon
+          swi-prolog
         ];
       };
     });
