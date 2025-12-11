@@ -105,10 +105,10 @@ fn part_b(input: &Input) -> u64 {
                         let r = i32::try_from(r).unwrap() + *r_mod;
                         let c = i32::try_from(c).unwrap() + *c_mod;
                         let center = (usize::try_from(r).unwrap(), usize::try_from(c).unwrap());
-                        if !centers.contains(&center) {
-                            centers.insert(center);
-                        } else {
+                        if centers.contains(&center) {
                             sum += 1;
+                        } else {
+                            centers.insert(center);
                         }
                     }
                 }
