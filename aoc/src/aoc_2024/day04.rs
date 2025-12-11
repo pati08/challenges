@@ -69,7 +69,7 @@ fn search_b(
     from_c: usize,
     dir: usize,
 ) -> bool {
-    let (r_mod, c_mod) = DIR_VEC[dir];
+    let (r_mod, c_mod) = DIR_VEC_DIAGS_ONLY[dir];
 
     for i in 0..search_str.len() {
         let r = i32::try_from(from_r).unwrap() + r_mod * i32::try_from(i).unwrap();
@@ -105,10 +105,10 @@ fn part_b(input: &Input) -> u64 {
                         let r = i32::try_from(r).unwrap() + *r_mod;
                         let c = i32::try_from(c).unwrap() + *c_mod;
                         let center = (usize::try_from(r).unwrap(), usize::try_from(c).unwrap());
-                        if centers.contains(&center) {
-                            sum += 1;
-                        } else {
+                        if !centers.contains(&center) {
                             centers.insert(center);
+                        } else {
+                            sum += 1;
                         }
                     }
                 }
