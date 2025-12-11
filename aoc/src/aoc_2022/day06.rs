@@ -3,7 +3,7 @@ use challenges_input::Input;
 pub const TRIM: bool = true;
 
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
 fn all_unique<T: PartialEq>(list: &[T]) -> bool {
@@ -17,7 +17,7 @@ fn all_unique<T: PartialEq>(list: &[T]) -> bool {
     true
 }
 
-fn part_a(input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
     input
         .get_original()
         .trim()
@@ -29,7 +29,7 @@ fn part_a(input: Input) -> u64 {
         + 4
 }
 
-fn part_b(input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
     input
         .get_original()
         .trim()
@@ -49,24 +49,24 @@ mod tests {
     #[test]
     fn test_part_a() {
         let input = mk_test_input!("mjqjpqmgbljsphdztnvjfqwrcgsmlb");
-        assert_eq!(part_a(input), 7);
+        assert_eq!(part_a(&input), 7);
 
         let input = mk_test_input!("bvwbjplbgvbhsrlpgdmjqwftvncz");
-        assert_eq!(part_a(input), 5);
+        assert_eq!(part_a(&input), 5);
 
         let input = mk_test_input!("nppdvjthqldpwncqszvftbrmjlhg");
-        assert_eq!(part_a(input), 6);
+        assert_eq!(part_a(&input), 6);
     }
 
     #[test]
     fn test_part_b() {
         let input = mk_test_input!("mjqjpqmgbljsphdztnvjfqwrcgsmlb");
-        assert_eq!(part_b(input), 19);
+        assert_eq!(part_b(&input), 19);
 
         let input = mk_test_input!("bvwbjplbgvbhsrlpgdmjqwftvncz");
-        assert_eq!(part_b(input), 23);
+        assert_eq!(part_b(&input), 23);
 
         let input = mk_test_input!("nppdvjthqldpwncqszvftbrmjlhg");
-        assert_eq!(part_b(input), 23);
+        assert_eq!(part_b(&input), 23);
     }
 }

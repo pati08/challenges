@@ -5,10 +5,10 @@ use challenges_input::Input;
 pub const TRIM: bool = true;
 
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
-fn part_a(input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
     let fresh = input
         .lines()
         .take_while(|l| !l.is_empty())
@@ -32,7 +32,7 @@ fn part_a(input: Input) -> u64 {
         .count() as u64
 }
 
-fn part_b(input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
     let fresh = input
         .lines()
         .take_while(|l| !l.is_empty())
@@ -86,7 +86,7 @@ fn overlaps(r1: &RangeInclusive<u64>, r2: &RangeInclusive<u64>) -> bool {
 }
 
 aoc_helpers::mk_aoc_test!(
-    "3-5
+    &"3-5
 10-14
 16-20
 12-18

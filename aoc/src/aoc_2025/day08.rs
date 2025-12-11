@@ -10,7 +10,7 @@ use rayon::slice::ParallelSliceMut;
 pub const TRIM: bool = true;
 
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
 fn sorted_pairs(
@@ -21,7 +21,8 @@ fn sorted_pairs(
     pairs
 }
 
-fn part_a(mut input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
+    let mut input = input.clone();
     let best_n: usize = input.next().unwrap();
     let coords: Vec<[f32; 3]> = input
         .lines()
@@ -121,7 +122,8 @@ fn gen_pairs(coords: &[[f32; 3]]) -> Vec<((usize, usize), f32)> {
     pairs.drain().collect()
 }
 
-fn part_b(mut input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
+    let mut input = input.clone();
     let _: usize = input.next().unwrap();
     let coords: Vec<[f32; 3]> = input
         .lines()
@@ -180,11 +182,11 @@ fn part_b(mut input: Input) -> u64 {
         .last()
         .unwrap();
     let pair = (coords[pair.0], coords[pair.1]);
-    pair.0[0] as u64 * pair.1[0] as u64
+    u64::try_from(pair.0[0] as i64).unwrap() * u64::try_from(pair.1[0] as i64).unwrap()
 }
 
 aoc_helpers::mk_aoc_test!(
-    "10
+    &"10
 162,817,812
 57,618,57
 906,360,560

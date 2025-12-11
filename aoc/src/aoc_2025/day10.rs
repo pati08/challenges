@@ -10,7 +10,7 @@ use z3::{Optimize, Solvable, ast::Int};
 pub const TRIM: bool = true;
 
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
 #[derive(Debug)]
@@ -55,13 +55,13 @@ fn parse_line(line: &str) -> InputLine {
     }
 }
 
-fn parse_input(input: Input) -> Day10Input {
+fn parse_input(input: &Input) -> Day10Input {
     Day10Input {
         lines: input.lines().map(|i| parse_line(&i)).collect(),
     }
 }
 
-fn part_a(input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
     let input = parse_input(input);
     let num_lines = input.lines.len();
     input
@@ -100,7 +100,7 @@ fn dijkstra(input: &InputLine) -> u64 {
     u64::MAX
 }
 
-fn part_b(input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
     let input = parse_input(input);
     let num_lines = input.lines.len();
     input
@@ -144,7 +144,7 @@ fn part_b(input: Input) -> u64 {
 }
 
 aoc_helpers::mk_aoc_test!(
-    "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
+    &"[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
 [...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}
 [.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}",
     7,

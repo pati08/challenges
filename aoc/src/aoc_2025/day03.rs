@@ -3,7 +3,7 @@ use challenges_input::Input;
 pub const TRIM: bool = true;
 
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
 fn pos_max_first<T: PartialOrd>(iter: impl Iterator<Item = T>) -> Option<usize> {
@@ -18,7 +18,7 @@ fn pos_max_first<T: PartialOrd>(iter: impl Iterator<Item = T>) -> Option<usize> 
         .map(|v| v.0)
 }
 
-fn part_a(input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
     input
         .lines()
         .map(|l| {
@@ -32,7 +32,7 @@ fn part_a(input: Input) -> u64 {
         .sum()
 }
 
-fn part_b(input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
     input
         .lines()
         .map(|l| {
@@ -52,7 +52,7 @@ fn part_b(input: Input) -> u64 {
 }
 
 aoc_helpers::mk_aoc_test!(
-    "987654321111111
+    &"987654321111111
 811111111111119
 234234234234278
 818181911112111",

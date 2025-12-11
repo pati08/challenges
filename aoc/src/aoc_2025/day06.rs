@@ -3,10 +3,10 @@ use challenges_input::Input;
 pub const TRIM: bool = false;
 
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
-fn part_a(input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
     let nums: Vec<Vec<_>> = input
         .lines()
         .map(|l| l.trim().to_string())
@@ -40,7 +40,7 @@ fn part_a(input: Input) -> u64 {
         .sum()
 }
 
-fn part_b(input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
     let input_grid: Vec<Vec<_>> = input.lines().map(|i| i.chars().collect()).collect();
     let ops_line = input.lines().last().unwrap();
     let col_h = input.lines().count() - 1;
@@ -90,7 +90,7 @@ fn part_b(input: Input) -> u64 {
 }
 
 aoc_helpers::mk_aoc_test!(
-    "123 328  51 64 
+    &"123 328  51 64 
  45 64  387 23 
   6 98  215 314
 *   +   *   +  ",

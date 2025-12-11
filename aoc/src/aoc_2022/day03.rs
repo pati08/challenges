@@ -4,7 +4,7 @@ use itertools::Itertools;
 pub const TRIM: bool = true;
 
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
 fn priority(c: char) -> u64 {
@@ -15,7 +15,7 @@ fn priority(c: char) -> u64 {
     }
 }
 
-fn part_a(input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
     input
         .lines()
         .map(|line| {
@@ -30,7 +30,7 @@ fn part_a(input: Input) -> u64 {
         .sum()
 }
 
-fn part_b(input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
     input
         .lines()
         .tuples::<(_, _, _)>()
@@ -58,6 +58,6 @@ wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
 ttgJtRGJQctTZtZT
 CrZsJsPPZsGzwwsLwLmpwMDw"
         );
-        assert_eq!(part_a(input), 157);
+        assert_eq!(part_a(&input), 157);
     }
 }

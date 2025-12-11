@@ -4,7 +4,7 @@ use itertools::Itertools;
 pub const TRIM: bool = true;
 
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
 #[derive(Default)]
@@ -19,7 +19,7 @@ struct StateB {
     splits: usize,
 }
 
-fn part_a(input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
     input
         .lines()
         .fold(State::default(), |mut state, line| {
@@ -51,7 +51,7 @@ fn part_a(input: Input) -> u64 {
         .splits as u64
 }
 
-fn part_b(input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
     input
         .lines()
         .fold(StateB::default(), |mut state, line| {
@@ -102,7 +102,7 @@ fn custom_dedup<T: PartialEq>(iter: impl Iterator<Item = (T, usize)>) -> Vec<(T,
 }
 
 aoc_helpers::mk_aoc_test!(
-    ".......S.......
+    &".......S.......
 ...............
 .......^.......
 ...............

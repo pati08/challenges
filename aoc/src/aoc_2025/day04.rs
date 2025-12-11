@@ -3,7 +3,7 @@ use challenges_input::Input;
 pub const TRIM: bool = true;
 
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
 fn movable(y: usize, x: usize, grid: &[Vec<bool>]) -> bool {
@@ -12,11 +12,11 @@ fn movable(y: usize, x: usize, grid: &[Vec<bool>]) -> bool {
 
     let x_range = (-1i64..=1)
         .filter(|i| (*i >= 0 || x > 0) && (*i <= 0 || x < w - 1))
-        .map(|v| (x as i64 + v) as usize);
+        .map(|v| usize::try_from(x as i64 + v).unwrap());
 
     let y_range = (-1i64..=1)
         .filter(|i| (*i >= 0 || y > 0) && (*i <= 0 || y < h - 1))
-        .map(|v| (y as i64 + v) as usize);
+        .map(|v| usize::try_from(y as i64 + v).unwrap());
 
     let num_around = y_range
         .flat_map(|y1| x_range.clone().map(move |x1| (y1, x1)))
@@ -25,7 +25,7 @@ fn movable(y: usize, x: usize, grid: &[Vec<bool>]) -> bool {
     num_around < 4
 }
 
-fn part_a(input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
     let grid: Vec<Vec<_>> = input
         .lines()
         .map(|l| l.chars().map(|c| c == '@').collect())
@@ -39,7 +39,7 @@ fn part_a(input: Input) -> u64 {
         .count() as u64
 }
 
-fn part_b(input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
     let mut grid: Vec<Vec<_>> = input
         .lines()
         .map(|l| l.chars().map(|c| c == '@').collect())
@@ -65,7 +65,7 @@ fn part_b(input: Input) -> u64 {
 }
 
 aoc_helpers::mk_aoc_test!(
-    "..@@.@@@@.
+    &"..@@.@@@@.
 @@@.@.@.@@
 @@@@@.@.@@
 @.@@@@..@.

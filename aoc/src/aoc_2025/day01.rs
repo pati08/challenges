@@ -3,10 +3,10 @@ use challenges_input::Input;
 pub const TRIM: bool = true;
 
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
-fn part_a(input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
     input
         .lines()
         .map(|l| l[1..].parse::<i64>().unwrap() * (i64::from(l.starts_with('R')) * 2 - 1))
@@ -17,7 +17,7 @@ fn part_a(input: Input) -> u64 {
         .sum()
 }
 
-fn part_b(input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
     input
         .lines()
         .map(|l| l[1..].parse::<i64>().unwrap() * (i64::from(l.starts_with('R')) * 2 - 1))
@@ -30,7 +30,7 @@ fn part_b(input: Input) -> u64 {
 }
 
 aoc_helpers::mk_aoc_test!(
-    "L68
+    &"L68
 L30
 R48
 L5

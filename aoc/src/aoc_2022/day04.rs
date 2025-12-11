@@ -4,10 +4,10 @@ use itertools::Itertools;
 pub const TRIM: bool = true;
 
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
-fn part_a(input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
     input
         .lines()
         .filter(|i| {
@@ -32,7 +32,7 @@ fn part_a(input: Input) -> u64 {
         .count() as u64
 }
 
-fn part_b(input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
     input
         .lines()
         .filter(|i| {
@@ -72,7 +72,7 @@ mod tests {
 6-6,4-6
 2-6,4-8"
         );
-        assert_eq!(part_a(input), 2);
+        assert_eq!(part_a(&input), 2);
     }
 
     #[test]
@@ -85,6 +85,6 @@ mod tests {
 6-6,4-6
 2-6,4-8"
         );
-        assert_eq!(part_b(input), 4);
+        assert_eq!(part_b(&input), 4);
     }
 }

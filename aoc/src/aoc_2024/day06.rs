@@ -4,7 +4,7 @@ use challenges_input::Input;
 
 pub const TRIM: bool = true;
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
 #[derive(PartialEq, Clone)]
@@ -29,7 +29,7 @@ const fn is_in_bounds(pos: (i32, i32), rows: usize, cols: usize) -> bool {
     pos.0 >= 0 && pos.0 < rows as i32 && pos.1 >= 0 && pos.1 < cols as i32
 }
 
-fn part_a(input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
     let mut grid: Vec<Vec<GridPos>> = vec![];
     let mut guard = None;
     for (i, line) in input.lines().enumerate() {
@@ -59,7 +59,7 @@ fn part_a(input: Input) -> u64 {
         grid[0].len(),
     ) {
         let new_pos = next_pos((guard.0 as i32, guard.1 as i32), dir);
-        let new_pos = (new_pos.0 as usize, new_pos.1 as usize);
+        let new_pos = (usize::try_from(new_pos.0).unwrap(), usize::try_from(new_pos.1).unwrap());
         if grid[new_pos.0][new_pos.1] == GridPos::Block {
             dir = turn_right(dir);
             continue;
@@ -72,7 +72,7 @@ fn part_a(input: Input) -> u64 {
 }
 
 #[allow(clippy::too_many_lines)] // grandfathered in
-fn part_b(input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
     let input = input.get_original();
     // Implement solution for Part 2
     let input = input.trim();
@@ -220,7 +220,7 @@ mod tests {
 #.........
 ......#..."
         );
-        assert_eq!(part_a(input), 41);
+        assert_eq!(part_a(&input), 41);
     }
     #[test]
     fn part_b_works() {
@@ -236,6 +236,6 @@ mod tests {
 #.........
 ......#..."
         );
-        assert_eq!(part_b(input), 6);
+        assert_eq!(part_b(&input), 6);
     }
 }
