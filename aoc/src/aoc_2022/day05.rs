@@ -34,7 +34,7 @@ impl FromStr for Instruction {
 fn part_a(mut input: Input) -> String {
     let mut stacks = input
         .lines_consuming()
-        .take_while(|l| l.contains("["))
+        .take_while(|l| l.contains('['))
         .collect_vec()
         .into_iter()
         .rev()
@@ -65,7 +65,7 @@ fn part_a(mut input: Input) -> String {
 fn part_b(mut input: Input) -> String {
     let mut stacks = input
         .lines_consuming()
-        .take_while(|l| l.contains("["))
+        .take_while(|l| l.contains('['))
         .collect_vec()
         .into_iter()
         .rev()

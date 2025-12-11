@@ -35,17 +35,17 @@ fn parse_line(line: &str) -> InputLine {
         .chars()
         .map(|i| i == '#')
         .collect();
-    let buttons = line[buttons_start..buttons_end + 1]
+    let buttons = line[buttons_start..=buttons_end]
         .split_whitespace()
         .map(|i| {
             i[1..i.len() - 1]
-                .split(",")
+                .split(',')
                 .map(|i| i.parse().unwrap())
                 .collect()
         })
         .collect();
     let joltages = line[joltages_start..line.len() - 1]
-        .split(",")
+        .split(',')
         .map(|i| i.parse().unwrap())
         .collect();
     InputLine {

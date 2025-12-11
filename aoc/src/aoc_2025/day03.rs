@@ -25,8 +25,8 @@ fn part_a(input: Input) -> u64 {
             let best_d1_pos = pos_max_first(l[..l.len() - 1].chars()).unwrap();
             let best_d2_pos =
                 pos_max_first(l[best_d1_pos + 1..].chars()).unwrap() + best_d1_pos + 1;
-            let best_d1 = l.chars().nth(best_d1_pos).unwrap().to_digit(10).unwrap() as u64;
-            let best_d2 = l.chars().nth(best_d2_pos).unwrap().to_digit(10).unwrap() as u64;
+            let best_d1 = u64::from(l.chars().nth(best_d1_pos).unwrap().to_digit(10).unwrap());
+            let best_d2 = u64::from(l.chars().nth(best_d2_pos).unwrap().to_digit(10).unwrap());
             best_d1 * 10 + best_d2
         })
         .sum()
@@ -42,7 +42,7 @@ fn part_b(input: Input) -> u64 {
                 let best_digit_pos =
                     pos_max_first(l[start_cutoff..l.len() - i].chars()).unwrap() + start_cutoff;
                 let best_digit =
-                    l.chars().nth(best_digit_pos).unwrap().to_digit(10).unwrap() as u64;
+                    u64::from(l.chars().nth(best_digit_pos).unwrap().to_digit(10).unwrap());
                 joltage += best_digit * 10u64.pow(i as u32);
                 start_cutoff = best_digit_pos + 1;
             }

@@ -12,10 +12,10 @@ fn part_a(input: Input) -> u64 {
         .lines()
         .filter(|i| {
             let [e1, e2, ..] = i
-                .split(",")
+                .split(',')
                 .map(|e| {
                     let [s, e, ..] = e
-                        .split("-")
+                        .split('-')
                         .map(|i| i.parse::<u64>().unwrap())
                         .collect_vec()[..]
                     else {
@@ -37,10 +37,10 @@ fn part_b(input: Input) -> u64 {
         .lines()
         .filter(|i| {
             let [e1, e2, ..] = i
-                .split(",")
+                .split(',')
                 .map(|e| {
                     let [s, e, ..] = e
-                        .split("-")
+                        .split('-')
                         .map(|i| i.parse::<u64>().unwrap())
                         .collect_vec()[..]
                     else {

@@ -6,6 +6,8 @@ edition = "2024"
 [lints.clippy]
 pedantic = { level = "warn", priority = -1 }
 similar-names = "allow"
+cast-possible-truncation = "allow"
+cast-possible-wrap = "allow"
 
 [dependencies]
 clap.workspace = true

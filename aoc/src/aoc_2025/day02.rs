@@ -10,10 +10,10 @@ fn part_a(mut input: Input) -> u64 {
     input
         .next_line()
         .unwrap()
-        .split(",")
+        .split(',')
         .flat_map(|v| {
             let [s, e, ..] = v
-                .split("-")
+                .split('-')
                 .map(|i| i.parse::<u64>().unwrap())
                 .collect::<Vec<_>>()[..]
             else {
@@ -48,10 +48,10 @@ fn part_b(mut input: Input) -> u64 {
     input
         .next_line()
         .unwrap()
-        .split(",")
+        .split(',')
         .flat_map(|v| {
             let [s, e, ..] = v
-                .split("-")
+                .split('-')
                 .map(|i| i.parse::<u64>().unwrap())
                 .collect::<Vec<_>>()[..]
             else {

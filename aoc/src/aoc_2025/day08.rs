@@ -26,7 +26,7 @@ fn part_a(mut input: Input) -> u64 {
     let coords: Vec<[f32; 3]> = input
         .lines()
         .map(|l| {
-            l.split(",")
+            l.split(',')
                 .map(|i| i.parse().unwrap())
                 .collect_array()
                 .unwrap()
@@ -58,7 +58,7 @@ fn part_a(mut input: Input) -> u64 {
     );
 
     let mut subnets = subnets_sizes(&map, coords.len());
-    subnets.sort();
+    subnets.sort_unstable();
     subnets.reverse();
     subnets[0..3].iter().product::<usize>() as u64
 }
@@ -126,7 +126,7 @@ fn part_b(mut input: Input) -> u64 {
     let coords: Vec<[f32; 3]> = input
         .lines()
         .map(|l| {
-            l.split(",")
+            l.split(',')
                 .map(|i| i.parse().unwrap())
                 .collect_array()
                 .unwrap()
@@ -171,7 +171,7 @@ fn part_b(mut input: Input) -> u64 {
                     acc.1.remove(setb);
                 }
                 _ => (),
-            };
+            }
             if acc.1.len() == 1 && acc.1[0].len() == length {
                 acc.0 = true;
             }
