@@ -18,10 +18,10 @@ const DIR_VEC_DIAGS_ONLY: [(i32, i32); 4] = [(-1, -1), (1, -1), (-1, 1), (1, 1)]
 pub const TRIM: bool = true;
 
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
-fn part_a(input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
     const SEARCH_STR: &str = "XMAS";
     let grid: Vec<Vec<char>> = input
         .lines()
@@ -47,13 +47,14 @@ fn search(search_str: &str, grid: &[Vec<char>], from_r: usize, from_c: usize, di
     let (r_mod, c_mod) = DIR_VEC[dir];
 
     for i in 0..search_str.len() {
-        let r = from_r as i32 + r_mod * i as i32;
-        let c = from_c as i32 + c_mod * i as i32;
+        let r = i32::try_from(from_r).unwrap() + r_mod * i32::try_from(i).unwrap();
+        let c = i32::try_from(from_c).unwrap() + c_mod * i32::try_from(i).unwrap();
         if r < 0
             || c < 0
-            || r >= grid.len() as i32
-            || c >= grid[0].len() as i32
-            || grid[r as usize][c as usize] != search_str.chars().nth(i).unwrap()
+            || r >= i32::try_from(grid.len()).unwrap()
+            || c >= i32::try_from(grid[0].len()).unwrap()
+            || grid[usize::try_from(r).unwrap()][usize::try_from(c).unwrap()]
+                != search_str.chars().nth(i).unwrap()
         {
             return false;
         }
@@ -68,16 +69,17 @@ fn search_b(
     from_c: usize,
     dir: usize,
 ) -> bool {
-    let (r_mod, c_mod) = DIR_VEC_DIAGS_ONLY[dir];
+    let (r_mod, c_mod) = DIR_VEC[dir];
 
     for i in 0..search_str.len() {
-        let r = from_r as i32 + r_mod * i as i32;
-        let c = from_c as i32 + c_mod * i as i32;
+        let r = i32::try_from(from_r).unwrap() + r_mod * i32::try_from(i).unwrap();
+        let c = i32::try_from(from_c).unwrap() + c_mod * i32::try_from(i).unwrap();
         if r < 0
             || c < 0
-            || r >= grid.len() as i32
-            || c >= grid[0].len() as i32
-            || grid[r as usize][c as usize] != search_str.chars().nth(i).unwrap()
+            || r >= i32::try_from(grid.len()).unwrap()
+            || c >= i32::try_from(grid[0].len()).unwrap()
+            || grid[usize::try_from(r).unwrap()][usize::try_from(c).unwrap()]
+                != search_str.chars().nth(i).unwrap()
         {
             return false;
         }
@@ -85,7 +87,7 @@ fn search_b(
     true
 }
 
-fn part_b(input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
     const SEARCH_STR: &str = "MAS";
 
     let grid: Vec<Vec<char>> = input
@@ -100,13 +102,13 @@ fn part_b(input: Input) -> u64 {
             if grid[r][c] == 'M' {
                 for (dir, (r_mod, c_mod)) in DIR_VEC_DIAGS_ONLY.iter().enumerate() {
                     if search_b(SEARCH_STR, &grid, r, c, dir) {
-                        let r = r as i32 + *r_mod;
-                        let c = c as i32 + *c_mod;
-                        let center = (r as usize, c as usize);
-                        if !centers.contains(&center) {
-                            centers.insert(center);
-                        } else {
+                        let r = i32::try_from(r).unwrap() + *r_mod;
+                        let c = i32::try_from(c).unwrap() + *c_mod;
+                        let center = (usize::try_from(r).unwrap(), usize::try_from(c).unwrap());
+                        if centers.contains(&center) {
                             sum += 1;
+                        } else {
+                            centers.insert(center);
                         }
                     }
                 }
@@ -136,7 +138,7 @@ SAXAMASAAA
 MAMMMXMMMM
 MXMXAXMASX"
         );
-        assert_eq!(part_a(input), 18);
+        assert_eq!(part_a(&input), 18);
     }
 
     #[test]
@@ -153,6 +155,6 @@ SAXAMASAAA
 MAMMMXMMMM
 MXMXAXMASX"
         );
-        assert_eq!(part_b(input), 9);
+        assert_eq!(part_b(&input), 9);
     }
 }

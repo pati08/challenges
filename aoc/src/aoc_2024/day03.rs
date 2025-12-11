@@ -3,10 +3,10 @@ use challenges_input::Input;
 pub const TRIM: bool = true;
 
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
-fn part_a(input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
     let input = input.get_original();
 
     input
@@ -14,7 +14,7 @@ fn part_a(input: Input) -> u64 {
         .filter_map(|(i, _)| {
             let digits_1 = input[i + 4..]
                 .chars()
-                .take_while(|c| c.is_ascii_digit())
+                .take_while(char::is_ascii_digit)
                 .collect::<String>();
             let num_1 = digits_1.parse::<u64>().ok()?;
 
@@ -28,7 +28,7 @@ fn part_a(input: Input) -> u64 {
 
             let digits_2 = input[i + 4 + 1 + digits_1.len()..]
                 .chars()
-                .take_while(|c| c.is_ascii_digit())
+                .take_while(char::is_ascii_digit)
                 .collect::<String>();
             let num_2 = digits_2.parse::<u64>().ok()?;
 
@@ -45,7 +45,7 @@ fn part_a(input: Input) -> u64 {
         .sum()
 }
 
-fn part_b(input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
     let input = input.get_original();
 
     let mut dos: Vec<usize> = input.match_indices("do()").map(|i| i.0).collect();
@@ -73,7 +73,7 @@ fn part_b(input: Input) -> u64 {
 
             let digits_1 = input[i + 4..]
                 .chars()
-                .take_while(|c| c.is_ascii_digit())
+                .take_while(char::is_ascii_digit)
                 .collect::<String>();
             let num_1 = digits_1.parse::<u64>().ok()?;
 
@@ -87,7 +87,7 @@ fn part_b(input: Input) -> u64 {
 
             let digits_2 = input[i + 4 + 1 + digits_1.len()..]
                 .chars()
-                .take_while(|c| c.is_ascii_digit())
+                .take_while(char::is_ascii_digit)
                 .collect::<String>();
             let num_2 = digits_2.parse::<u64>().ok()?;
 
@@ -115,7 +115,7 @@ mod tests {
         let input = mk_test_input!(
             "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))"
         );
-        assert_eq!(part_a(input), 161);
+        assert_eq!(part_a(&input), 161);
     }
 
     #[test]
@@ -123,6 +123,6 @@ mod tests {
         let input = mk_test_input!(
             "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"
         );
-        assert_eq!(part_b(input), 48);
+        assert_eq!(part_b(&input), 48);
     }
 }

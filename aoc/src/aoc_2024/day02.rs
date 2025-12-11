@@ -3,10 +3,10 @@ use challenges_input::Input;
 pub const TRIM: bool = true;
 
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
-fn part_a(input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
     input
         .lines()
         .filter(|l| {
@@ -28,7 +28,7 @@ fn part_a(input: Input) -> u64 {
         .count() as u64
 }
 
-fn part_b(input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
     input
         .lines()
         .filter(|l| {
@@ -79,7 +79,7 @@ mod tests {
 8 6 4 4 1
 1 3 6 7 9"
         );
-        assert_eq!(part_a(input), 2);
+        assert_eq!(part_a(&input), 2);
     }
 
     #[test]
@@ -92,6 +92,6 @@ mod tests {
 8 6 4 4 1
 1 3 6 7 9"
         );
-        assert_eq!(part_b(input), 4);
+        assert_eq!(part_b(&input), 4);
     }
 }

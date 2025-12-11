@@ -31,7 +31,7 @@ fn part_a(mut input: Input) -> u64 {
 fn is_repeat(s: &str) -> bool {
     'a: for i in 1..s.len() {
         let ss = &s[..i];
-        if s.len() % i > 0 {
+        if s.len().is_multiple_of(i) {
             continue;
         }
         for j in 1..(s.len() / i) {

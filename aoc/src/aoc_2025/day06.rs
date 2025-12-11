@@ -35,7 +35,7 @@ fn part_a(input: Input) -> u64 {
                 "*" => 1,
                 _ => unreachable!(),
             };
-            operands.fold(start, |acc, i| operation(acc, i))
+            operands.fold(start, operation)
         })
         .sum()
 }
@@ -84,7 +84,7 @@ fn part_b(input: Input) -> u64 {
                     .unwrap()
             });
             *acc += width + 2;
-            Some(operands.fold(start, |acc, i| operation(acc, i)))
+            Some(operands.fold(start, operation))
         })
         .sum()
 }

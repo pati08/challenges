@@ -1,12 +1,11 @@
 use std::{
     cmp::Reverse,
-    collections::{BinaryHeap, HashMap, HashSet},
-    io::{Read, Write},
-    process::{Command, Stdio},
+    collections::{BinaryHeap, HashMap},
 };
 
 use challenges_input::Input;
 use itertools::Itertools;
+use z3::{Optimize, Solvable, ast::Int};
 
 pub const TRIM: bool = true;
 
@@ -107,50 +106,41 @@ fn part_b(input: Input) -> u64 {
     input
         .lines
         .into_iter()
-        .enumerate()
-        .map(|(l_idx, input)| {
-            println!("{l_idx}/{}", num_lines);
-            dijkstra_b(&input)
+        .map(|input| {
+            let vars = (0..input.buttons.len())
+                .map(|i| Int::fresh_const(&format!("button_{i}_value")))
+                .collect_vec();
+            let nonnegative_constraints = vars.iter().map(|i| i.ge(0));
+            let joltage_constraints =
+                input
+                    .joltages
+                    .into_iter()
+                    .enumerate()
+                    .map(|(j_idx, joltage)| {
+                        let button_sum = input
+                            .buttons
+                            .iter()
+                            .enumerate()
+                            .filter(|i| i.1.contains(&j_idx))
+                            .map(|(i, _)| &vars[i])
+                            .fold(Int::from_u64(0), |acc, i| acc + i);
+                        button_sum.eq(joltage as u64)
+                    });
+            let constraints = nonnegative_constraints.chain(joltage_constraints);
+            let solver = Optimize::new();
+            for constraint in constraints {
+                solver.assert(&constraint);
+            }
+            let total = vars.iter().fold(Int::from_u64(0), |acc, i| acc + i);
+            solver.minimize(&total);
+            solver.check(&[]);
+            total
+                .read_from_model(&solver.get_model().unwrap(), false)
+                .unwrap()
+                .as_u64()
+                .unwrap()
         })
         .sum()
-}
-
-fn dijkstra_b(input: &InputLine) -> u64 {
-    let presses: Vec<usize> = vec![];
-    let mut frontier: BinaryHeap<Reverse<(u64, Box<[usize]>)>> = BinaryHeap::new();
-    frontier.push(Reverse((
-        0,
-        vec![0; input.joltages.len()].into_boxed_slice(),
-    )));
-    let mut explored: HashMap<Box<[usize]>, u64> = HashMap::new();
-    while let Some(v) = frontier.pop() {
-        'buttons: for i in &input.buttons {
-            let mut new = v.0.1.clone();
-            for l in i {
-                new[*l] += 1;
-            }
-            let cost = v.0.0 + 1;
-            let mut any_unequal = false;
-            for i in new.iter().zip(input.joltages.iter()) {
-                if i.0 != i.1 {
-                    any_unequal = true;
-                    break;
-                }
-                if i.0 > i.1 {
-                    continue 'buttons;
-                }
-            }
-            if !any_unequal {
-                return cost;
-            }
-            if explored.get(&new).is_some_and(|v| *v <= cost) {
-                continue;
-            }
-            explored.insert(new.clone(), cost);
-            frontier.push(Reverse((cost, new)));
-        }
-    }
-    unreachable!()
 }
 
 aoc_helpers::mk_aoc_test!(

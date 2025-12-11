@@ -1,6 +1,6 @@
 use std::{
-    collections::{BinaryHeap, HashMap, HashSet},
-    hash::{Hasher, SipHasher},
+    collections::{HashMap, HashSet},
+    hash::Hasher,
 };
 
 use challenges_input::Input;

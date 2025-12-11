@@ -14,7 +14,7 @@ struct Rule {
 impl FromStr for Rule {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut s = s.split("|");
+        let mut s = s.split('|');
         let (x, y) = (
             s.next().ok_or(())?.parse().map_err(|_| ())?,
             s.next().ok_or(())?.parse().map_err(|_| ())?,
@@ -31,7 +31,7 @@ fn part_a(mut input: Input) -> u64 {
             Some(
                 input
                     .next_line()?
-                    .split(",")
+                    .split(',')
                     .map(|i| i.parse::<u64>().unwrap())
                     .collect::<Vec<_>>(),
             )
@@ -53,7 +53,7 @@ fn part_b(mut input: Input) -> u64 {
             Some(
                 input
                     .next_line()?
-                    .split(",")
+                    .split(',')
                     .map(|i| i.parse::<u64>().unwrap())
                     .collect::<Vec<_>>(),
             )
@@ -71,10 +71,10 @@ fn part_b(mut input: Input) -> u64 {
 fn find_issue(pages: &[u64], rules: &[Rule]) -> Option<(usize, usize)> {
     for (page_num, page) in pages.iter().enumerate() {
         for rule in rules.iter().filter(|rule| rule.y == *page) {
-            if let Some(rule_x_idx) = pages.iter().position(|i| i == &rule.x) {
-                if rule_x_idx > page_num {
-                    return Some((page_num, rule_x_idx));
-                }
+            if let Some(rule_x_idx) = pages.iter().position(|i| i == &rule.x)
+                && rule_x_idx > page_num
+            {
+                return Some((page_num, rule_x_idx));
             }
         }
     }

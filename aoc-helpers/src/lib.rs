@@ -7,7 +7,26 @@ use challenges_input::Input;
 
 #[macro_export]
 macro_rules! mk_aoc_test {
-    ($input:expr, $ans_a:expr, $ans_b:expr) => {
+    (&$input:literal, $ans_a:literal, $ans_b:literal) => {
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+            use $crate::mk_test_input;
+
+            #[test]
+            fn part_a_works() {
+                let input = mk_test_input!($input);
+                assert_eq!(part_a(&input), $ans_a);
+            }
+
+            #[test]
+            fn part_b_works() {
+                let input = mk_test_input!($input);
+                assert_eq!(part_b(&input), $ans_b);
+            }
+        }
+    };
+    ($input:literal, $ans_a:literal, $ans_b:literal) => {
         #[cfg(test)]
         mod tests {
             use super::*;
@@ -71,6 +90,19 @@ macro_rules! mk_test_input {
     ( $input:expr ) => {{
         challenges_input::Input::new($input.to_string(), super::TRIM)
     }};
+}
+
+pub fn ref_run<A: Display + Send + 'static, B: Display + Send + 'static>(
+    input: Input,
+    part_a: impl FnOnce(&Input) -> A + Send + 'static,
+    part_b: impl FnOnce(&Input) -> B + Send + 'static,
+) -> String {
+    let input_2 = input.clone();
+    let h1 = std::thread::spawn(move || part_a(&input_2));
+    let h2 = std::thread::spawn(move || part_b(&input));
+    let a_res = h1.join().unwrap();
+    let b_res = h2.join().unwrap();
+    format!("Part A: {a_res}\nPart B: {b_res}")
 }
 
 pub fn run<A: Display + Send + 'static, B: Display + Send + 'static>(

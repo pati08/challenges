@@ -4,14 +4,14 @@ use itertools::Itertools;
 pub const TRIM: bool = true;
 
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
-fn part_a(input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
     let points = input
         .lines()
         .map(|l| {
-            l.split(",")
+            l.split(',')
                 .map(|i| i.parse::<u64>().unwrap())
                 .collect_tuple::<(_, _)>()
                 .unwrap()
@@ -29,11 +29,11 @@ fn area(((x1, y1), (x2, y2)): ((u64, u64), (u64, u64))) -> u64 {
     (x1.max(x2) - x1.min(x2) + 1) * (y1.max(y2) - y1.min(y2) + 1)
 }
 
-fn part_b(input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
     let points = input
         .lines()
         .map(|l| {
-            l.split(",")
+            l.split(',')
                 .map(|i| i.parse::<u64>().unwrap())
                 .collect_tuple::<(_, _)>()
                 .unwrap()
@@ -77,20 +77,20 @@ fn decompress_coordinates(x_map: &[u64], y_map: &[u64], p: (usize, usize)) -> (u
 }
 
 fn compress_coordinates(points: &[(u64, u64)]) -> (Vec<(usize, usize)>, Vec<u64>, Vec<u64>) {
-    let all_xes = points.iter().map(|i| i.0).sorted().dedup().collect_vec();
-    let all_yes = points.iter().map(|i| i.1).sorted().dedup().collect_vec();
+    let all_x_points = points.iter().map(|i| i.0).sorted().dedup().collect_vec();
+    let all_y_points = points.iter().map(|i| i.1).sorted().dedup().collect_vec();
     (
         points
             .iter()
             .map(|i| {
                 (
-                    all_xes.iter().position(|j| *j == i.0).unwrap() * 2 + 1,
-                    all_yes.iter().position(|j| *j == i.1).unwrap() * 2 + 1,
+                    all_x_points.iter().position(|j| *j == i.0).unwrap() * 2 + 1,
+                    all_y_points.iter().position(|j| *j == i.1).unwrap() * 2 + 1,
                 )
             })
             .collect(),
-        all_xes,
-        all_yes,
+        all_x_points,
+        all_y_points,
     )
 }
 
@@ -177,7 +177,7 @@ fn point_allowed(allowed: &[bool], point: (usize, usize), width: usize) -> bool 
 }
 
 aoc_helpers::mk_aoc_test!(
-    "7,1
+    &"7,1
 11,1
 11,7
 9,7

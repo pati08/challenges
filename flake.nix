@@ -32,7 +32,13 @@
           rustPlatform
           bacon
           swi-prolog
+          llvmPackages.libclang
+          llvmPackages.clang
+          pkg-config
+          zlib
+          z3
         ];
+        LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
       };
     });
 }

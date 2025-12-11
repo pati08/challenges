@@ -4,7 +4,7 @@ use itertools::Itertools;
 pub const TRIM: bool = true;
 
 pub fn run(input: Input) -> String {
-    aoc_helpers::run(input, part_a, part_b)
+    aoc_helpers::ref_run(input, part_a, part_b)
 }
 
 fn to_code(s: &str) -> u8 {
@@ -24,7 +24,7 @@ fn bonus(a: u8, b: u8) -> u8 {
     }
 }
 
-fn part_a(input: Input) -> u64 {
+fn part_a(input: &Input) -> u64 {
     let codes = input.lines().map(|v| {
         let parts: Vec<_> = v.split_whitespace().collect();
         (to_code(parts[0]), to_code(parts[1]))
@@ -32,7 +32,7 @@ fn part_a(input: Input) -> u64 {
     codes.map(|(a, b)| u64::from(b + bonus(a, b))).sum()
 }
 
-fn part_b(input: Input) -> u64 {
+fn part_b(input: &Input) -> u64 {
     input
         .lines()
         .map(|v| {
@@ -81,9 +81,9 @@ mod tests {
 B X
 C Z"
         );
-        assert_eq!(part_a(input), 15);
-        assert_eq!(part_a(mk_test_input!("A Y")), 8);
-        assert_eq!(part_a(mk_test_input!("B X")), 1);
-        assert_eq!(part_a(mk_test_input!("C Z")), 6);
+        assert_eq!(part_a(&input), 15);
+        assert_eq!(part_a(&mk_test_input!("A Y")), 8);
+        assert_eq!(part_a(&mk_test_input!("B X")), 1);
+        assert_eq!(part_a(&mk_test_input!("C Z")), 6);
     }
 }
