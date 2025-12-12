@@ -10,7 +10,7 @@ pub fn run(input: Input) -> String {
 }
 
 #[derive(PartialEq, PartialOrd, Debug, Hash, Eq, Clone)]
-struct NodeId(String);
+struct NodeId(Rc<str>);
 
 #[derive(Debug)]
 struct NodeInfo {
@@ -24,10 +24,10 @@ fn parse_line(l: &str) -> NodeInfo {
     };
     let connections = connections_part
         .split_whitespace()
-        .map(|i| NodeId(i.to_string()))
+        .map(|i| NodeId(i.into()))
         .collect_vec();
     NodeInfo {
-        node: NodeId(node_name.to_string()),
+        node: NodeId(node_name.into()),
         connections,
     }
 }
@@ -36,114 +36,65 @@ fn part_a(input: &Input) -> u64 {
     let lines = input.lines().map(|i| parse_line(&i));
     let map: HashMap<NodeId, Vec<NodeId>> =
         lines.fold(HashMap::<NodeId, Vec<NodeId>>::new(), |mut acc, node| {
+            let ent = acc.entry(node.node).or_default();
             for c in node.connections {
-                let ent = acc.entry(c).or_default();
-                ent.push(node.node.clone());
+                ent.push(c);
             }
             acc
         });
-    num_paths(&map, NodeId("you".to_string()), &NodeId("out".to_string()))
+    num_paths(&map, &NodeId("you".into()), &NodeId("out".into()), &[])
 }
 
-// fn get_paths_rec(map: &HashMap<NodeId, Vec<NodeId>>, from: NodeId, to: &NodeId, memo: &mut ) -> Vec<Vec<NodeId>> {
-//     let mut stack = vec![vec![from]];
-//     let mut completed = vec![];
-//     while let Some(path) = stack.pop() {
-//         let next = path.last().unwrap();
-//         let next_locations = map.get(next).cloned().unwrap_or(vec![]);
-//         for loc in next_locations {
-//             if &loc == to {
-//                 completed.push(path.clone());
-//             } else {
-//                 let mut new_path = path.clone();
-//                 new_path.push(loc);
-//                 stack.push(new_path);
-//             }
-//         }
-//     }
-//     completed
-// }
-//
-fn get_paths(
-    reverse_map: &HashMap<NodeId, Vec<NodeId>>,
-    from: NodeId,
+fn rec_num_paths(
+    map: &HashMap<NodeId, Vec<NodeId>>,
+    from: &NodeId,
     to: &NodeId,
-) -> Vec<Vec<NodeId>> {
-    let mut routes_map: HashMap<NodeId, Vec<Vec<NodeId>>> = HashMap::new();
-    let mut stack: Vec<(NodeId, Vec<NodeId>)> = vec![(to.clone(), vec![])];
-    while let Some(i) = stack.pop() {
-        let mut path = i.1.clone();
-        path.push(i.0.clone());
-        for c in reverse_map.get(&i.0).cloned().unwrap_or_else(|| vec![]) {
-            routes_map.entry(c.clone()).or_default().push(path.clone());
-            stack.push((c, path.clone()));
-        }
+    reqs: &[NodeId],
+    memo: &mut HashMap<(NodeId, Vec<NodeId>), u64>,
+) -> u64 {
+    if let Some(v) = memo.get(&(from.clone(), reqs.to_vec())) {
+        return *v;
     }
-    routes_map.get(&from).cloned().unwrap_or_default()
+    if from == to {
+        return u64::from(reqs.is_empty());
+    }
+    let mut total = 0;
+    for i in map.get(from).unwrap() {
+        let new_reqs = reqs.iter().filter(|j| *j != i).cloned().collect_vec();
+        total += rec_num_paths(map, i, to, &new_reqs[..], memo);
+    }
+    memo.insert((from.clone(), reqs.to_vec()), total);
+    total
 }
 
-fn num_paths(map: &HashMap<NodeId, Vec<NodeId>>, from: NodeId, to: &NodeId) -> u64 {
-    get_paths(map, from, to).len() as u64
+fn num_paths(
+    map: &HashMap<NodeId, Vec<NodeId>>,
+    from: &NodeId,
+    to: &NodeId,
+    reqs: &[NodeId],
+) -> u64 {
+    let mut memo = HashMap::new();
+    rec_num_paths(map, from, to, reqs, &mut memo)
 }
 
 fn part_b(input: &Input) -> u64 {
     let lines = input.lines().map(|i| parse_line(&i));
     let map: HashMap<NodeId, Vec<NodeId>> =
         lines.fold(HashMap::<NodeId, Vec<NodeId>>::new(), |mut acc, node| {
-            for c in &node.connections {
-                let ent = acc.entry(c.clone()).or_default();
-                ent.push(node.node.clone());
+            let ent = acc.entry(node.node).or_default();
+            for c in node.connections {
+                ent.push(c);
             }
             acc
         });
-    get_paths(&map, NodeId("svr".to_string()), &NodeId("out".to_string()))
-        .into_iter()
-        .filter(|i| {
-            i.contains(&NodeId("dac".to_string())) && i.contains(&NodeId("fft".to_string()))
-        })
-        .count() as u64
+
+    num_paths(
+        &map,
+        &NodeId("svr".into()),
+        &NodeId("out".into()),
+        &vec![NodeId("dac".into()), NodeId("fft".into())][..],
+    )
 }
-
-// fn rec_num_paths(
-//     map: &HashMap<NodeId, Vec<NodeId>>,
-//     from: (NodeId, [bool; 2]),
-//     to: &NodeId,
-//     memo: &mut HashMap<NodeId, Vec<Vec<NodeId>>>,
-// ) -> u64 {
-//     const REQS: [&str; 2] = ["dac", "fft"];
-//     if let Some(v) = memo.get(&from.0) {
-//         return v.3;
-//     }
-//     let next_locations = map.get(&from.0).cloned().unwrap_or(vec![]);
-//
-//     let mut total = 0;
-//     for loc in next_locations {
-//         println!("going to {loc:?}");
-//         if &loc == to {
-//             println!("reached an output");
-//             if from.1[0] && from.1[1] {
-//                 //
-//             }
-//         } else {
-//             let r1 = from.1[0] || loc.0 == REQS[0];
-//             let r2 = from.1[1] || loc.0 == REQS[1];
-//             rec_num_paths(map, (loc.clone(), [r1, r2]), to, memo);
-//             let &(new_count_r1, new_count_r2, new_count_total, new_count_both) =
-//                 memo.get(&loc).unwrap();
-//             count_r1 += new_count_r1;
-//             count_r2 += new_count_r2;
-//             count_total += new_count_total;
-//             count_both += new_count_both;
-//         }
-//     }
-//     memo.insert(from.0, (count_r1, count_r2, count_total, count_both));
-//     count_both
-// }
-
-// fn num_paths_b(map: &HashMap<NodeId, Vec<NodeId>>, from: NodeId, to: &NodeId) -> u64 {
-//     let mut memo = HashMap::new();
-//     rec_num_paths(map, (from, [false; 2]), to, &mut memo)
-// }
 
 aoc_helpers::mk_aoc_test!(
     &"svr: aaa bbb
