@@ -8,7 +8,7 @@ members = [ "aoc-helpers", "aoc", "challenges-input", "proc-macros",
 clap = { version = "4.5", features = ["derive"] }
 challenges-input.path = "./challenges-input"
 proc-macros.path = "./proc-macros"
-itertools = "0.14.0"
+itertools = "0.15.0"
 
 [package]
 name = "challenges"
@@ -20,7 +20,7 @@ rowan2025 = { path = "rowan2025" }
 aoc = { path = "aoc" }
 clap.workspace = true
 challenges-input.workspace = true
-arboard = "3.5.0"
+arboard = "3.6.1"
 float-ord = "0.3.2"
-lru = "0.16.2"
-z3 = "0.19.6"
+lru = "0.18.5"
+z3 = "0.21.1"
